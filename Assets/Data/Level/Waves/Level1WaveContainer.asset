@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 117af250d0b6bb549a1b308abb759f0c, type: 3}
   m_Name: Level1WaveContainer
   m_EditorClassIdentifier: 
-  waves: []
+  waves:
+  - {fileID: 11400000, guid: f4c67b9a84674bf4f86e348dd36bf099, type: 2}
+  - {fileID: 11400000, guid: 744a9b0ed1946574dacb9881b3fab7a6, type: 2}
+  - {fileID: 11400000, guid: c1453fa5707018b41ad78fa17d964bd2, type: 2}
+  - {fileID: 11400000, guid: 21c7af37fd7475441a407ab6c9fad528, type: 2}
+  - {fileID: 11400000, guid: 2c24b79c6dd254944bde0c1a00ffad56, type: 2}
+  - {fileID: 11400000, guid: 82140c6596770cc429660b9be144bd29, type: 2}

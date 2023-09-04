@@ -11,7 +11,6 @@ namespace Towers
         [SerializeField] [Tooltip("How the tower selects which enemy to target")] public TargetingPriority targetingPriority;
         // TODO: Projectile modifiers
 
-        public Vector3 CenterPos { get; set; }
         public float FireOffset
         {
             get => fireOffset;
@@ -32,9 +31,6 @@ namespace Towers
         }
         private float _fireRate;
         private float _time;
-        public float Range { get; set; }
-
-        private Enemy.EnemyBrain _target;
 
         // Animations
         private Animator _animator;
@@ -49,18 +45,11 @@ namespace Towers
             _time = FireRate * fireOffset;
         }
 
-        private void Update()
-        {
-            _target = EnemyManager.Instance.FindEnemy(targetingPriority, CenterPos, Range);
-            TryShoot();
-        }
-
         /// <summary>
         /// Attempts to shoot a projectile.
         /// </summary>
-        private void TryShoot()
+        public void TryShoot()
         {
-            if (_target == null) return;
             _time += Time.deltaTime;
             if (!(_time >= _fireRate)) return;
             Shoot();

@@ -5,7 +5,9 @@
         - Settings for if they are all controlled at once or individually
         - UI should support a dynamic number of targeting options
 
-- Create TowerBase prefab
+- ~~Tower Placement Script~~
+
+- ~~Create TowerBase prefab~~
 
 - Create TowerShooter prefab
 
@@ -13,6 +15,8 @@
 
 
 ##### ENEMIES #####
+- Display wave number
+
 - Enemy Properties
     - Camo, lead, etc
 

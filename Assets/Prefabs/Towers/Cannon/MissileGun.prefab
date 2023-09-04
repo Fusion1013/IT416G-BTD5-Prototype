@@ -131,6 +131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3601607715163282904, guid: feb3ea23c62934643a4f8df4e6bb6605, type: 3}
+  fireOffset: 0.5
+  targetingPriority: 0
 --- !u!95 &5872477041343140855
 Animator:
   serializedVersion: 5

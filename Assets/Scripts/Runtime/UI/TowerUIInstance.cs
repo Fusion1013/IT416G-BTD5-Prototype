@@ -42,5 +42,10 @@ namespace UI
         #endregion
 
         private void UpdateCostColor(int coins) => costText.color = coins < data.cost ? Color.red : Color.green;
+
+        public void TryBuy()
+        {
+            TowerManager.Instance.BuyTower(data);
+        }
     }
 }

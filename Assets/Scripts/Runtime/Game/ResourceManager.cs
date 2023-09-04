@@ -1,4 +1,6 @@
 using System;
+using Enemy;
+using Towers;
 using UnityEngine;
 
 namespace Game
@@ -20,6 +22,8 @@ namespace Game
         private int _currentCoins;
         public static event Action<int> OnCoinsChange;
 
+        [SerializeField] private int coinsPerRound = 150;
+
         private void Awake()
         {
             if (Instance == null) Instance = this;
@@ -38,26 +42,47 @@ namespace Game
 
         private void OnEnable()
         {
-            Enemy.EnemyBrain.OnEnemyKilled += OnEnemyKilled;
-            Enemy.EnemyBrain.OnEnemyPathComplete += OnEnemyExit;
+            EnemyBrain.OnEnemyKilled += OnEnemyKilled;
+            EnemyBrain.OnEnemyPathComplete += OnEnemyExit;
+            WaveManager.OnWaveDone += OnRoundFinish;
         }
 
         private void OnDisable()
         {
-            Enemy.EnemyBrain.OnEnemyKilled -= OnEnemyKilled;
-            Enemy.EnemyBrain.OnEnemyPathComplete -= OnEnemyExit;
+            EnemyBrain.OnEnemyKilled -= OnEnemyKilled;
+            EnemyBrain.OnEnemyPathComplete -= OnEnemyExit;
+            WaveManager.OnWaveDone -= OnRoundFinish;
         }
 
-        private void OnEnemyKilled(Enemy.EnemyBrain enemyBrain)
+        public bool TryBuyTower(TowerData data)
         {
-            _currentCoins++;
+            if (_currentCoins < data.cost) return false;
+            AddCoins(-data.cost);
+            return true;
+        }
+
+        private void OnEnemyKilled(EnemyBrain enemyBrain)
+        {
+            AddCoins(1);
+        }
+
+        private void OnEnemyExit(EnemyBrain enemyBrain)
+        {
+            AddHealth(-1);
+        }
+
+        private void AddCoins(int amount)
+        {
+            _currentCoins += amount;
             OnCoinsChange?.Invoke(_currentCoins);
         }
 
-        private void OnEnemyExit(Enemy.EnemyBrain enemyBrain)
+        private void AddHealth(int amount)
         {
-            _currentHealth--;
+            _currentHealth += amount;
             OnHealthChange?.Invoke(_currentHealth);
         }
+
+        private void OnRoundFinish(int round) => AddCoins(coinsPerRound);
     }
 }

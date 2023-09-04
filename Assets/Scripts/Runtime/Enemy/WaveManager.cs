@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Enemy
 {
@@ -14,12 +15,16 @@ namespace Enemy
         /// either by the player defeating all the enemies,
         /// or all the enemies making it to the goal.
         /// </summary>
-        public static event WaveDone OnWaveDone;
+        public static event WaveEvent OnWaveDone;
+        [SerializeField] private UnityEvent<int> onWaveDone;
+
+        public static event WaveEvent OnWaveStart;
+        [SerializeField] private UnityEvent<int> onWaveStart;
 
         /// <summary>
-        /// <param name="wave">The wave that was just completed</param>
+        /// <param name="wave">The wave this action is relevant to</param>
         /// </summary>
-        public delegate void WaveDone(int wave);
+        public delegate void WaveEvent(int wave);
 
         public Path enemyPath;
 
@@ -55,6 +60,7 @@ namespace Enemy
             {
                 _waveInProgress = false;
                 OnWaveDone?.Invoke(_currentWave);
+                onWaveDone?.Invoke(_currentWave);
                 _currentWave++;
             }
         }
@@ -74,6 +80,8 @@ namespace Enemy
             if (waveContainer.waves.Length <= _currentWave) return false;
 
             SpawnWave();
+            OnWaveStart?.Invoke(_currentWave);
+            onWaveStart?.Invoke(_currentWave);
 
             _waveInProgress = true;
             return true;

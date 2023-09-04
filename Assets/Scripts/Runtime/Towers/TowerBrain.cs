@@ -5,6 +5,7 @@ using Core.Extensions;
 using Enemy;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Towers
 {
@@ -17,11 +18,14 @@ namespace Towers
         [Tooltip("Weather the tower should rotate to face the target enemy or not")]
         private bool rotate = true;
 
+        [SerializeField] private GameObject rangeIndicator;
+        public float baseSize;
+
         [Header("Upgrades")] 
         [SerializeField] 
         private UpgradePath[] upgradePaths;
-        
-        [Header("Shooting")] 
+
+        [Header("Shooting")]
         [SerializeField] 
         [Tooltip("The time between activations of the shooters attached to this tower")]
         private float baseFireRate;
@@ -30,7 +34,7 @@ namespace Towers
         [SerializeField] 
         [Tooltip("The range at which this tower can target enemies")]
         private float baseRange;
-        private float _rangeModified;
+        public float RangeModified { get; private set; }
 
         [SerializeField] 
         [Tooltip("How the tower selects which enemy to target")]
@@ -39,37 +43,55 @@ namespace Towers
         [SerializeField] private ProjectileShooter[] projectileShooters;
         public ProjectileShooter[] ProjectileShooters => projectileShooters;
         
+        [FormerlySerializedAs("canShoot")] [HideInInspector] public bool isActive;
+        
         [Header("Events")]
         [SerializeField] 
         [Tooltip("Called when any of the Projectile Shooters connected to the tower shoots")]
         private UnityEvent onTowerFire;
-
+        
         private EnemyBrain _target;
         private float _time;
+        public Collider2D Footprint { get; private set; }
 
         #endregion
 
         #region Init
 
-        private void Start()
+        private void Awake()
         {
-            ReloadShooters();
+            Footprint = GetComponent<Collider2D>();
+            CalculateModifiers();
         }
 
-        private void OnDisable()
-        {
-            UnsubscribeFromShooters();
-        }
+        private void Start() => ReloadShooters();
+        private void OnDisable() => UnsubscribeFromShooters();
 
         private void OnValidate()
         {
+            ValidateFields();
             CalculateModifiers();
             LoadShooters();
         }
 
+        private void ValidateFields()
+        {
+            if (baseRange < 0)
+            {
+                Debug.LogWarning($"Base range should be at least 0 (Current: {baseRange})", this);
+                baseRange = 0;
+            }
+
+            if (baseFireRate < 0)
+            {
+                Debug.LogWarning($"Base fire rate should be at least 0 (Current: {baseFireRate})", this);
+                baseFireRate = 0;
+            }
+        }
+
         private void CalculateModifiers()
         {
-            _rangeModified = baseRange;
+            RangeModified = baseRange;
             _fireRateModified = baseFireRate;
             
             foreach (var path in upgradePaths)
@@ -78,7 +100,7 @@ namespace Towers
                 {
                     if (!upgrade.isUnlocked) continue;
                     
-                    _rangeModified += upgrade.data.additiveRange;
+                    RangeModified += upgrade.data.additiveRange;
                     _fireRateModified += upgrade.data.additiveFireRate;
                 }
             }
@@ -105,10 +127,8 @@ namespace Towers
             {
                 if (gun == null) continue;
                 
-                gun.Range = _rangeModified;
                 gun.FireRate = _fireRateModified;
                 gun.targetingPriority = targetingPriority;
-                gun.CenterPos = transform.position;
             }
         }
 
@@ -130,10 +150,24 @@ namespace Towers
 
         #endregion
 
+        #region Targeting
+
         private void Update()
         {
-            _target = EnemyManager.Instance.FindEnemy(targetingPriority, transform.position, _rangeModified);
+            if (!isActive) return;
+            
+            _target = EnemyManager.Instance.FindEnemy(targetingPriority, transform.position, RangeModified);
             if (rotate) LookAtTarget();
+            FireAllShooters();
+        }
+
+        private void FireAllShooters()
+        {
+            foreach (var shooter in projectileShooters)
+            {
+                var enemy = EnemyManager.Instance.FindEnemy(shooter.targetingPriority, transform.position, RangeModified);
+                if (enemy) shooter.TryShoot();
+            }
         }
 
         private void OnGunShoot() => onTowerFire?.Invoke();
@@ -149,15 +183,34 @@ namespace Towers
 
         private void OnDrawGizmosSelected()
         {
+            var position = transform.position;
+            
             // Draw range Gizmo
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, _rangeModified);
-            
+            Gizmos.DrawWireSphere(position, RangeModified);
+
             // Draw target line
             if (_target == null) return;
             var targetPos = _target.transform.position;
+            Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, targetPos);
         }
+
+        #endregion
+
+        #region Information
+
+        public void ShowRangeIndicator(bool show)
+        {
+            rangeIndicator.transform.localScale = Vector3.one * RangeModified * 2;
+            rangeIndicator.SetActive(show);
+        }
+
+        public void SetRangeIndicatorColor(Color color) => rangeIndicator.GetComponent<SpriteRenderer>().color = color;
+        private void OnMouseEnter() => ShowRangeIndicator(isActive || rangeIndicator.activeSelf);
+        private void OnMouseExit() => ShowRangeIndicator(!isActive && rangeIndicator.activeSelf);
+
+        #endregion
     }
 
     public enum TargetingPriority

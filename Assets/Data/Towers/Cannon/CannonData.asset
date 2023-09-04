@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Cannon
   cost: 170
-  scenePrefab: {fileID: 4177611270703941341, guid: 234fb9b65cfc7a048a01d381eacf4887, type: 3}
+  towerPrefab: {fileID: 8435908353103494640, guid: 121acc793b5e2ec4bacbcb6ecb7af501, type: 3}
   shopIcon: {fileID: 21300000, guid: 2ab106a9aa9fa4249b8d2d89f7e3f0cf, type: 3}

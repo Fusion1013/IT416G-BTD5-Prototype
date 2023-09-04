@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groups:
   - startTime: 0
-    timeGap: 1
-    amount: 10
+    timeGap: 0.75
+    amount: 20
     enemies:
     - {fileID: 11400000, guid: aead0e0473b075f478b9177bf3a79764, type: 2}
