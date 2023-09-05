@@ -18,7 +18,7 @@ MonoBehaviour:
     amount: 5
     enemies:
     - {fileID: 11400000, guid: aead0e0473b075f478b9177bf3a79764, type: 2}
-  - startTime: 8
+  - startTime: 2
     timeGap: 0.75
     amount: 27
     enemies:

@@ -50,6 +50,8 @@ namespace UI
             if (current > target) return current - 1;
             if (current < target) return current + 1;
             return current;
+            
+            // TODO
         }
 
         private void OnCoinsChange(int newCoins) => _currentCoin = newCoins;

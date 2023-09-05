@@ -9,6 +9,8 @@ namespace Enemy
     public class WaveManager : MonoBehaviour
     {
         #region Fields
+        
+        public static WaveManager Instance { get; private set; }
 
         /// <summary>
         /// Called when a wave is done,
@@ -16,25 +18,33 @@ namespace Enemy
         /// or all the enemies making it to the goal.
         /// </summary>
         public static event WaveEvent OnWaveDone;
-        [SerializeField] private UnityEvent<int> onWaveDone;
+        [SerializeField] private UnityEvent<int, int> onWaveDone;
 
         public static event WaveEvent OnWaveStart;
-        [SerializeField] private UnityEvent<int> onWaveStart;
+        [SerializeField] private UnityEvent<int, int> onWaveStart;
 
         /// <summary>
         /// <param name="wave">The wave this action is relevant to</param>
+        /// <param name="maxWaves">The number of total waves</param>
         /// </summary>
-        public delegate void WaveEvent(int wave);
+        public delegate void WaveEvent(int wave, int maxWaves);
 
         public Path enemyPath;
 
         public SWaveContainer waveContainer;
         private int _currentWave = 0;
+        private bool _isSpawningWave = false;
         private bool _waveInProgress = false;
 
         #endregion
 
-        #region Enable / Disable
+        #region Init
+
+        private void Awake()
+        {
+            if (Instance == null) Instance = this;
+            else Debug.LogError($"Multiple instances of {this} found in scene", this);
+        }
 
         private void OnEnable()
         {
@@ -47,7 +57,7 @@ namespace Enemy
         }
 
         #endregion
-        
+
         /// <summary>
         /// Checks if there are any enemies alive and if there are not,
         /// set the wave state to not active.
@@ -56,11 +66,11 @@ namespace Enemy
         /// <param name="enemiesRemaining">The number of enemies that are remaining</param>
         private void OnEnemyDeath(EnemyBrain enemyBrain, int enemiesRemaining)
         {
-            if (enemiesRemaining == 0)
+            if (enemiesRemaining == 0 && !_isSpawningWave)
             {
                 _waveInProgress = false;
-                OnWaveDone?.Invoke(_currentWave);
-                onWaveDone?.Invoke(_currentWave);
+                OnWaveDone?.Invoke(_currentWave, waveContainer.waves.Length);
+                onWaveDone?.Invoke(_currentWave, waveContainer.waves.Length);
                 _currentWave++;
             }
         }
@@ -80,8 +90,8 @@ namespace Enemy
             if (waveContainer.waves.Length <= _currentWave) return false;
 
             SpawnWave();
-            OnWaveStart?.Invoke(_currentWave);
-            onWaveStart?.Invoke(_currentWave);
+            OnWaveStart?.Invoke(_currentWave, waveContainer.waves.Length);
+            onWaveStart?.Invoke(_currentWave, waveContainer.waves.Length);
 
             _waveInProgress = true;
             return true;
@@ -90,6 +100,7 @@ namespace Enemy
         private void SpawnWave()
         {
             var wave = waveContainer.waves[_currentWave];
+            _isSpawningWave = true;
 
             // Spawn the wave
             foreach (var group in wave.groups)
@@ -103,14 +114,17 @@ namespace Enemy
             yield return new WaitForSeconds(group.startTime); // Wait before spawning the wave
             
             // Spawn all enemies in the wave with the specified time interval
-            foreach (var enemy in group.enemies)
+            for (int j = 0; j < group.enemies.Length; j++)
             {
+                var enemy = group.enemies[j];
                 for (var i = 0; i < group.amount; i++)
                 {
                     EnemyManager.Instance.SpawnEnemy(enemy, enemyPath, spawnPosition);
-                    yield return new WaitForSeconds(group.timeGap);
+                    if (!(j == group.enemies.Length - 1 && i == group.amount - 1)) yield return new WaitForSeconds(group.timeGap);
                 }
             }
+
+            _isSpawningWave = false;
         }
 
         #endregion

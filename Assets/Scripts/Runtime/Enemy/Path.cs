@@ -36,6 +36,7 @@ namespace Enemy
 
         private void CreateSmoothPoints()
         {
+            if (_curves == null) return;
             var smoothSegments = new List<Vector3>();
             foreach (var curve in _curves)
             {
@@ -48,8 +49,9 @@ namespace Enemy
 
         private void EnsureCurvesMatchPointPositions()
         {
+            if (waypoints is not { Count: > 0 }) return;
             if (_curves != null && _curves.Length == waypoints.Count - 1) return;
-            
+
             _curves = new BezierCurve[waypoints.Count - 1];
             for (var i = 0; i < _curves.Length; i++) _curves[i] = new BezierCurve();
         }

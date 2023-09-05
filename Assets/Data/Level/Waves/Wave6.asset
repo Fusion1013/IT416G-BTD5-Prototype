@@ -18,12 +18,12 @@ MonoBehaviour:
     amount: 15
     enemies:
     - {fileID: 11400000, guid: aead0e0473b075f478b9177bf3a79764, type: 2}
-  - startTime: 8
+  - startTime: 2
     timeGap: 0.5
     amount: 15
     enemies:
     - {fileID: 11400000, guid: c0cf05cd709ffbf43a17a5d9927758da, type: 2}
-  - startTime: 12
+  - startTime: 6
     timeGap: 0.75
     amount: 4
     enemies:

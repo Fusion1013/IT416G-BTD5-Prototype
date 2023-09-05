@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Enemy
@@ -6,5 +7,16 @@ namespace Enemy
     {
         public Vector3 inTangent;
         public Vector3 outTangent;
+
+        private void OnDrawGizmosSelected()
+        {
+            var position = transform.position;
+            
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(position, position + inTangent);
+            
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(position, position + outTangent);
+        }
     }
 }

@@ -19,11 +19,16 @@ namespace Enemy
         public int TargetWaypointId { get; set; }
         
         // Rotation
-        [SerializeField] private bool rotateAlongPath = true;
         private Quaternion _startRotation;
         private Quaternion _targetRotation;
         private float _rotateTime = 0;
-        
+
+        // Settings
+        [SerializeField] private bool rotateAlongPath = true;
+        [SerializeField] private SpriteRenderer spriteToFlip;
+        [SerializeField] private bool flipX = false;
+        [SerializeField] private bool flipY = false;
+
         // Events
         public event Action<PathFollower> OnPathFinished;
 
@@ -45,6 +50,7 @@ namespace Enemy
         {
             Move();
             if (rotateAlongPath) RotateTowardsTarget();
+            Flip();
         }
 
         #endregion
@@ -108,6 +114,27 @@ namespace Enemy
             _startRotation = transform.rotation;
             _targetRotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
             _rotateTime = 0;
+        }
+
+        #endregion
+
+        #region Flipping
+
+        private void Flip()
+        {
+            var pos = transform.position;
+            
+            if (flipX)
+            {
+                if (pos.x < _targetWaypointPos.x) spriteToFlip.flipX = false;
+                else if (pos.x > _targetWaypointPos.x) spriteToFlip.flipX = true;
+            }
+
+            if (flipY)
+            {
+                if (pos.y > _targetWaypointPos.y) spriteToFlip.flipY = false;
+                else if (pos.y < _targetWaypointPos.y) spriteToFlip.flipY = true;
+            }
         }
 
         #endregion

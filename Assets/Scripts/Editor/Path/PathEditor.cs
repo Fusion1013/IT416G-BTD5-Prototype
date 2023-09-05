@@ -22,6 +22,8 @@ namespace Path
 
         private void PathPointGUI()
         {
+            if (_path.waypoints == null) return;
+            
             foreach (var pathPoint in _path.waypoints)
             {
                 DrawPathPointPositionHandles(pathPoint);
@@ -31,6 +33,8 @@ namespace Path
 
         private void DrawPathPointPositionHandles(Component pathPoint)
         {
+            if (pathPoint == null) return;
+            
             EditorGUI.BeginChangeCheck();
             pathPoint.transform.position = Handles.PositionHandle(pathPoint.transform.position, Quaternion.identity);
             if (EditorGUI.EndChangeCheck())
@@ -45,6 +49,8 @@ namespace Path
 
         private static void DrawPathPointTangentPoints(PathPoint pathPoint)
         {
+            if (pathPoint == null) return;
+            
             var position = pathPoint.transform.position;
             Handles.color = Color.green;
             Handles.DrawLine(position, position + pathPoint.inTangent);
@@ -62,11 +68,11 @@ namespace Path
                 for (var j = 0; j < segments.Length - 1; j++)
                 {
                     Handles.DrawLine(segments[j], segments[j + 1]);
-                    Handles.Label(segments[j], $"C{i} S{j}");
+                    // Handles.Label(segments[j], $"C{i} S{j}");
                 }
                 
                 // Draw the last line
-                Handles.Label(segments[^1], $"C{i} S{segments.Length - 1}");
+                // Handles.Label(segments[^1], $"C{i} S{segments.Length - 1}");
                 Handles.DrawLine(segments[^1], _path.Curves[i].EndPosition);
             }
         }

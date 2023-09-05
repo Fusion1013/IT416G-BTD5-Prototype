@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Attributes;
 using Core.Extensions;
 using Enemy;
+using Towers.Projectile;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -17,6 +18,9 @@ namespace Towers
         [SerializeField] 
         [Tooltip("Weather the tower should rotate to face the target enemy or not")]
         private bool rotate = true;
+
+        [SerializeField]
+        private GameObject pivotPoint;
 
         [SerializeField] private GameObject rangeIndicator;
         public float baseSize;
@@ -178,7 +182,7 @@ namespace Towers
         private void LookAtTarget()
         {
             if (_target == null) return;
-            transform.rotation = QuaternionExtensions.Facing(_target.transform.position, transform.position, 90);
+            pivotPoint.transform.rotation = QuaternionExtensions.Facing(_target.transform.position, transform.position, 90);
         }
 
         private void OnDrawGizmosSelected()
@@ -189,6 +193,10 @@ namespace Towers
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(position, RangeModified);
 
+            // Draw base size
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(position, baseSize);
+            
             // Draw target line
             if (_target == null) return;
             var targetPos = _target.transform.position;

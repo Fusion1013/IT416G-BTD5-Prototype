@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   scale: 0.7
-  moveSpeed: 3
+  moveSpeed: 8
   dropOnDeath:
-  - data: {fileID: 11400000, guid: e1e4fd4cc1782d8419d146f44b622ec7, type: 2}
-    count: 2
-  sprite: {fileID: 1322580871, guid: a1c5385888a3ce842af662984b664c94, type: 3}
+  - data: {fileID: 11400000, guid: c0cf05cd709ffbf43a17a5d9927758da, type: 2}
+    count: 4
+  sprite: {fileID: 764241534, guid: 1f1e58e22f14c044d9ebb267de1e4172, type: 3}

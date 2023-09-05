@@ -10,6 +10,7 @@ namespace Towers
         [Header("General")]
         public string towerName;
         public int cost;
+        [TextArea(4, 10)] public string description;
 
         [FormerlySerializedAs("scenePrefab")] [Header("Scene")] 
         public TowerBrain towerPrefab; // TODO: Replace GameObject with some script that handles placement of tower

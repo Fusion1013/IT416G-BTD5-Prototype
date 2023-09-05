@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3da7e9f33814ba2950da08c960efb3d, type: 3}
+  m_Name: VikingShopData
+  m_EditorClassIdentifier: 
+  towerName: Viking
+  cost: 450
+  description: Throws battleaxes in quick succession.
+  towerPrefab: {fileID: 3344103758968989187, guid: cf6e9e0b13c539241bb05d853f2911cc, type: 3}
+  shopIcon: {fileID: -644162677, guid: 1f1e58e22f14c044d9ebb267de1e4172, type: 3}

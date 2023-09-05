@@ -1,3 +1,8 @@
+##### GAMEPLAY #####
+- Game over screen
+- Game won screen
+
+
 ##### TOWERS #####
 - Script that rotates the part of the tower it is attached to
     - Has targeting setting
@@ -5,8 +10,8 @@
         - Settings for if they are all controlled at once or individually
         - UI should support a dynamic number of targeting options
 
+- ~~A way to cancel tower placement~~
 - ~~Tower Placement Script~~
-
 - ~~Create TowerBase prefab~~
 
 - Create TowerShooter prefab
@@ -15,7 +20,7 @@
 
 
 ##### ENEMIES #####
-- Display wave number
+- ~~Display wave number~~
 
 - Enemy Properties
     - Camo, lead, etc
@@ -58,3 +63,14 @@
     - etc..
 
 - AOE's should only be able to hit a certain number of enemies
+
+
+##### UI #####
+- ~~Create a WaveUI instead of the current solution~~
+  - ~~Displays Current & Max waves~~
+  - ~~Deactivates the button when a wave is in progress~~
+
+
+##### BUGS #####
+- ~~If all enemies are killed, but more enemies are in the queue, the game will think that the wave has ended~~
+- When in a build, enemies move buggy along paths, especially noticeable along corners

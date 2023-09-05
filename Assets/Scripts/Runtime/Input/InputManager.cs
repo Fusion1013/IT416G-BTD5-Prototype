@@ -12,8 +12,11 @@ namespace Input
         
         // Events
         public static event Action OnGameplayInteract;
+        public static event Action OnGameplayCancel;
 
         #endregion
+
+        #region Init
 
         private void OnEnable()
         {
@@ -30,9 +33,20 @@ namespace Input
             _controls.Gameplay.Disable();
         }
 
+        #endregion
+
+        #region Input Events
+
         public void OnInteract(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started) OnGameplayInteract?.Invoke();
         }
+
+        public void OnCancel(InputAction.CallbackContext context)
+        {
+            if (context.phase == InputActionPhase.Started) OnGameplayCancel?.Invoke();
+        }
+
+        #endregion
     }
 }

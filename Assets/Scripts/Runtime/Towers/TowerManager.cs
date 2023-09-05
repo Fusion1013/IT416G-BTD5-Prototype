@@ -10,6 +10,9 @@ namespace Towers
     {
         #region Fields
 
+        [SerializeField] private Vector2 bounds;
+        public Vector2 Bounds => bounds;
+
         private Camera _mainCamera;
         
         public static TowerManager Instance { get; private set; }
@@ -35,11 +38,13 @@ namespace Towers
         private void OnEnable()
         {
             InputManager.OnGameplayInteract += PlaceHeldTower;
+            InputManager.OnGameplayCancel += CancelTowerPlacement;
         }
 
         private void OnDisable()
         {
             InputManager.OnGameplayInteract -= PlaceHeldTower;
+            InputManager.OnGameplayCancel -= CancelTowerPlacement;
         }
 
         #endregion
@@ -50,9 +55,7 @@ namespace Towers
         {
             MoveHeldTower();
             if (_heldTower == null) return;
-            var transform1 = _heldTower.transform;
-            var colliders = Physics2D.OverlapCircleAll(transform1.position, _heldTower.baseSize);
-            if (colliders.Length > 1) _heldTower.SetRangeIndicatorColor(new Color(1f, 0f, 0f, 0.5f));
+            if (!CanPlace()) _heldTower.SetRangeIndicatorColor(new Color(1f, 0f, 0f, 0.5f));
             else _heldTower.SetRangeIndicatorColor(new Color(1f, 1f, 1f, 0.5f));
         }
 
@@ -77,24 +80,39 @@ namespace Towers
             _heldTowerData = data;
         }
 
-        private void PlaceHeldTower()
+        private bool CanPlace()
+        {
+            var towerColliders = Physics2D.OverlapCircleAll(_heldTower.transform.position, _heldTower.baseSize, LayerMask.GetMask("Tower"));
+            if (towerColliders.Length > 1) return false;
+
+            var pathCollider = Physics2D.OverlapCircleAll(_heldTower.transform.position, .01f, LayerMask.GetMask("Path"));
+            return pathCollider.Length <= 0;
+        }
+
+        private void CancelTowerPlacement()
         {
             if (_heldTower == null) return;
             
-            // Check if the tower is overlapping with anything
-            var colliders = Physics2D.OverlapCircleAll(_heldTower.transform.position, _heldTower.baseSize);
-            if (colliders.Length > 1) return;
-            
+            Destroy(_heldTower.gameObject);
+            _heldTower = null;
+            _heldTowerData = null;
+        }
+
+        private void PlaceHeldTower()
+        {
+            // Check if a tower can be placed
+            if (_heldTower == null) return;
+            if (!CanPlace()) return;
+
             // Try to buy the tower
             if (!ResourceManager.Instance.TryBuyTower(_heldTowerData))
             {
-                Destroy(_heldTower);
+                Destroy(_heldTower.gameObject);
                 _heldTower = null;
                 _heldTowerData = null;
                 return;
             }
             
-            Debug.Log("Place tower");
             _heldTower.isActive = true;
             _heldTower.ShowRangeIndicator(false);
             _heldTower = null;

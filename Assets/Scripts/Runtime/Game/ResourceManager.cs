@@ -83,6 +83,6 @@ namespace Game
             OnHealthChange?.Invoke(_currentHealth);
         }
 
-        private void OnRoundFinish(int round) => AddCoins(coinsPerRound);
+        private void OnRoundFinish(int round, int maxRounds) => AddCoins(coinsPerRound);
     }
 }
