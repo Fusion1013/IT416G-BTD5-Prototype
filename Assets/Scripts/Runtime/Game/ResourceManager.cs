@@ -71,13 +71,13 @@ namespace Game
             AddHealth(-1);
         }
 
-        private void AddCoins(int amount)
+        public void AddCoins(int amount)
         {
             _currentCoins += amount;
             OnCoinsChange?.Invoke(_currentCoins);
         }
 
-        private void AddHealth(int amount)
+        public void AddHealth(int amount)
         {
             _currentHealth += amount;
             OnHealthChange?.Invoke(_currentHealth);

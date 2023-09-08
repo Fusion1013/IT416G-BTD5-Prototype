@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TestWaveContainer
   m_EditorClassIdentifier: 
   waves:
-  - {fileID: 11400000, guid: 72dd4c6ddbce7b9478a200cd79749bb6, type: 2}
+  - {fileID: 11400000, guid: f4c67b9a84674bf4f86e348dd36bf099, type: 2}

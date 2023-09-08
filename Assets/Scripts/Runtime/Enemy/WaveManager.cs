@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Debug = Core.Debug.Debug;
 
 namespace Enemy
 {
@@ -33,7 +33,7 @@ namespace Enemy
 
         public SWaveContainer waveContainer;
         private int _currentWave = 0;
-        private bool _isSpawningWave = false;
+        private int _waveSpawners = 0;
         private bool _waveInProgress = false;
 
         #endregion
@@ -43,7 +43,7 @@ namespace Enemy
         private void Awake()
         {
             if (Instance == null) Instance = this;
-            else Debug.LogError($"Multiple instances of {this} found in scene", this);
+            else Debug.LogFatal($"Multiple instances of {this} found in scene", this);
         }
 
         private void OnEnable()
@@ -66,7 +66,7 @@ namespace Enemy
         /// <param name="enemiesRemaining">The number of enemies that are remaining</param>
         private void OnEnemyDeath(EnemyBrain enemyBrain, int enemiesRemaining)
         {
-            if (enemiesRemaining == 0 && !_isSpawningWave)
+            if (enemiesRemaining == 0 && _waveSpawners <= 0)
             {
                 _waveInProgress = false;
                 OnWaveDone?.Invoke(_currentWave, waveContainer.waves.Length);
@@ -100,11 +100,12 @@ namespace Enemy
         private void SpawnWave()
         {
             var wave = waveContainer.waves[_currentWave];
-            _isSpawningWave = true;
+            _waveSpawners = 0;
 
             // Spawn the wave
             foreach (var group in wave.groups)
             {
+                _waveSpawners++;
                 StartCoroutine(SpawnEnemyGroup(group, enemyPath.Points[0]));
             }
         }
@@ -124,7 +125,7 @@ namespace Enemy
                 }
             }
 
-            _isSpawningWave = false;
+            _waveSpawners--;
         }
 
         #endregion

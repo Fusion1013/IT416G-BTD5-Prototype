@@ -59,6 +59,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "UI",
+            "id": "66de8a3a-2fab-4e84-b167-94326d3442c2",
+            "actions": [
+                {
+                    "name": "OpenCheatMenu",
+                    "type": "Button",
+                    "id": "3375fb70-e6ca-4a1c-8efa-51a320d3dfb4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c20f8331-e2b7-4374-9c80-640072bae6f0",
+                    "path": "<Keyboard>/f3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenCheatMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

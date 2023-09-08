@@ -64,7 +64,7 @@ namespace Enemy
             // If not at the waypoint yet, keep moving towards it
             if (transform.position != _targetWaypointPos)
             {
-                transform.position = Vector3.Lerp(_lastWaypointPos, _targetWaypointPos, _distanceMoved);
+                transform.position = Vector3.Lerp(_lastWaypointPos, _targetWaypointPos, Mathf.Min(_distanceMoved, 1));
             }
             else
             {

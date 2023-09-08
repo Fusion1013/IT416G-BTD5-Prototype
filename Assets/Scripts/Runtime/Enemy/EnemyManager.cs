@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game;
 using Towers;
 using Towers.Projectile;
 using UnityEngine;
+using Debug = Core.Debug.Debug;
 
 namespace Enemy
 {
@@ -26,7 +26,7 @@ namespace Enemy
         private void Awake()
         {
             if (Instance == null) Instance = this;
-            else Debug.LogError($"Multiple instances of {this} are present in the scene", this);
+            else Debug.LogFatal($"Multiple instances of {this} are present in the scene", this);
         }
 
         #endregion
