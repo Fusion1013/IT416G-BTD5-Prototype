@@ -1,4 +1,4 @@
-using Game;
+using Resources;
 using TMPro;
 using Towers;
 using UnityEngine;

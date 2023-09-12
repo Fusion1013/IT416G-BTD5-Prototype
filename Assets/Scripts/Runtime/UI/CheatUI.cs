@@ -1,5 +1,5 @@
-using Game;
 using Input;
+using Resources;
 using TMPro;
 using UnityEngine;
 

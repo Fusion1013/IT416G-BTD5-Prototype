@@ -18,10 +18,7 @@ namespace Enemy
         /// or all the enemies making it to the goal.
         /// </summary>
         public static event WaveEvent OnWaveDone;
-        [SerializeField] private UnityEvent<int, int> onWaveDone;
-
         public static event WaveEvent OnWaveStart;
-        [SerializeField] private UnityEvent<int, int> onWaveStart;
 
         /// <summary>
         /// <param name="wave">The wave this action is relevant to</param>
@@ -70,7 +67,6 @@ namespace Enemy
             {
                 _waveInProgress = false;
                 OnWaveDone?.Invoke(_currentWave, waveContainer.waves.Length);
-                onWaveDone?.Invoke(_currentWave, waveContainer.waves.Length);
                 _currentWave++;
             }
         }
@@ -91,7 +87,6 @@ namespace Enemy
 
             SpawnWave();
             OnWaveStart?.Invoke(_currentWave, waveContainer.waves.Length);
-            onWaveStart?.Invoke(_currentWave, waveContainer.waves.Length);
 
             _waveInProgress = true;
             return true;

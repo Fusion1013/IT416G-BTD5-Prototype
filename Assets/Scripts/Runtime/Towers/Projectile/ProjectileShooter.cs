@@ -38,6 +38,8 @@ namespace Towers.Projectile
         // Events
         public event Action OnShoot;
 
+        public TowerBrain parent;
+
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -62,7 +64,7 @@ namespace Towers.Projectile
             
             // Spawn the projectile and set the data of it
             var projectile = Instantiate(projectilePrefab, gunTransform.position, gunTransform.rotation);
-            // TODO: Apply modifiers
+            projectile.parent = parent;
 
             if (_animator) _animator.SetTrigger(FireAnimId);
         }

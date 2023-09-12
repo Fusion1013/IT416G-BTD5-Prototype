@@ -1,6 +1,6 @@
 ##### GAMEPLAY #####
-- Game over screen
-- Game won screen
+- ~~Game over screen~~
+- ~~Game won screen~~
 
 
 ##### TOWERS #####

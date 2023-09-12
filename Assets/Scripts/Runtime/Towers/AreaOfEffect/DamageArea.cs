@@ -12,9 +12,18 @@ namespace Towers.AreaOfEffect
         [SerializeField] private float lifetime;
         [SerializeField] private float cooldown;
         [SerializeField] private float range;
+        
+        [SerializeField]
+        [Tooltip("The number of enemies the damage area can kill each tick")]
+        private int piercing = 10;
+
+        [SerializeField]
+        [Tooltip("The number of enemies the damage area can kill in total")]
+        private int enemyLimit = 100;
 
         private float _cooldownTimer;
         private float _time;
+        private int _enemiesKilled;
 
         #endregion
 
@@ -36,12 +45,20 @@ namespace Towers.AreaOfEffect
 
         private void DamageInArea()
         {
+            int enemiesKilledThisTick = 0;
+            
             var colliders = Physics2D.OverlapCircleAll(transform.position, range, enemyLayer);
             foreach (var col in colliders)
             {
                 var enemy = col.GetComponent<EnemyBrain>();
                 if (enemy == null) continue;
                 enemy.Kill();
+                
+                _enemiesKilled++;
+                enemiesKilledThisTick++;
+
+                if (_enemiesKilled > enemyLimit) Destroy(gameObject);
+                if (enemiesKilledThisTick > piercing) break;
             }
         }
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AlchemistProjectileData
   m_EditorClassIdentifier: 
   movementSpeed: 4
+  projectilePath: {fileID: 11400000, guid: b2f966d755eaaca45a5b242d055d4164, type: 2}
   lifetime: 0.75
   piercing: 1
   instantiateOnSpawn: {fileID: 0}

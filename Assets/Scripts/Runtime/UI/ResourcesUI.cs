@@ -1,5 +1,6 @@
 using System;
-using Game;
+using System.Globalization;
+using Resources;
 using TMPro;
 using UnityEngine;
 
@@ -41,16 +42,18 @@ namespace UI
             {
                 _healthLerp += Time.deltaTime / lerpDuration;
                 _currentHealthDisplay = Mathf.Max(0, LerpValue(_healthLerp, _currentHealthDisplay, _currentHealth));
-                healthText.text = $"Health: {_currentHealthDisplay}";
+                SetText(healthText, "Health", _currentHealthDisplay);
             }
             
             if (_currentCoin != _currentCoinDisplay)
             {
                 _coinLerp += Time.deltaTime / lerpDuration;
                 _currentCoinDisplay = Mathf.Max(0, LerpValue(_coinLerp, _currentCoinDisplay, _currentCoin));
-                coinText.text = $"Coins: {_currentCoinDisplay}";
+                SetText(coinText, "Coins", _currentCoinDisplay);
             }
         }
+
+        private void SetText(TMP_Text text, string prefix, int value) => text.text = $"{prefix}: {value.ToString("#,#", CultureInfo.InvariantCulture)}";
 
         private int LerpValue(float lerp, int current, int target)
         {

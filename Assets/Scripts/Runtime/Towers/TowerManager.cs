@@ -1,8 +1,11 @@
 using System;
-using Game;
+using System.Collections.Generic;
 using Input;
+using Resources;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Towers
 {
@@ -10,18 +13,30 @@ namespace Towers
     {
         #region Fields
 
-        [SerializeField] private Vector2 bounds;
+        [SerializeField] 
+        [Tooltip("The bounds of the map")]
+        private Vector2 bounds;
         public Vector2 Bounds => bounds;
-
-        private Camera _mainCamera;
         
-        public static TowerManager Instance { get; private set; }
-        public TowerData[] towers;
+        [SerializeField]
+        [Tooltip("The towers that are unlocked at the start of the game")]
+        private List<TowerData> towers;
 
+        public static TowerManager Instance { get; private set; }
+
+        // -- Events
+        public static event Action<TowerBrain> OnTowerStartPlace;
+        public static event Action<TowerBrain> OnTowerFinishPlace;
+        public UnityEvent onTowerFinishPlace;
+
+        public static event Action<TowerData> OnTowerAdd; 
+        public static event Action<TowerData> OnTowerRemove; 
+        
+        // -- Internal
+        private Camera _mainCamera;
+        private TowerBrain _hoveredTower;
         private TowerBrain _heldTower; // The tower that the player is currently trying to place
         private TowerData _heldTowerData;
-
-        private TowerBrain _hoveredTower;
 
         #endregion
 
@@ -47,17 +62,39 @@ namespace Towers
             InputManager.OnGameplayCancel -= CancelTowerPlacement;
         }
 
+        private void Start()
+        {
+            foreach (var tower in towers)
+            {
+                OnTowerAdd?.Invoke(tower);
+            }
+        }
+
+        #endregion
+
+        #region Tower Availability Modifying
+
+        public void AddTower(TowerData data)
+        {
+            if (towers.Contains(data)) return;
+            
+            towers.Add(data);
+            OnTowerAdd?.Invoke(data);
+        }
+
+        public void RemoveTower(TowerData data)
+        {
+            if (!towers.Contains(data)) return;
+            
+            towers.Remove(data);
+            OnTowerRemove?.Invoke(data);
+        }
+
         #endregion
 
         #region Tower Placement
 
-        private void Update()
-        {
-            MoveHeldTower();
-            if (_heldTower == null) return;
-            if (!CanPlace()) _heldTower.SetRangeIndicatorColor(new Color(1f, 0f, 0f, 0.5f));
-            else _heldTower.SetRangeIndicatorColor(new Color(1f, 1f, 1f, 0.5f));
-        }
+        private void Update() => MoveHeldTower();
 
         private void MoveHeldTower()
         {
@@ -67,7 +104,7 @@ namespace Towers
             _heldTower.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
         }
 
-        public void BuyTower(TowerData data) // TODO: Should only take money when trying to place the tower on the field
+        public void BuyTower(TowerData data)
         {
             if (ResourceManager.Instance.Coins < data.cost) return;
             if (_heldTower != null) return;
@@ -75,17 +112,18 @@ namespace Towers
             // Instantiate tower placement placeholder
             var brain = Instantiate(data.towerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             brain.isActive = false;
-            brain.ShowRangeIndicator(true);
             _heldTower = brain;
             _heldTowerData = data;
+
+            OnTowerStartPlace?.Invoke(_heldTower);
         }
 
-        private bool CanPlace()
+        public static bool CanPlace(Vector3 position, float size)
         {
-            var towerColliders = Physics2D.OverlapCircleAll(_heldTower.transform.position, _heldTower.baseSize, LayerMask.GetMask("Tower"));
+            var towerColliders = Physics2D.OverlapCircleAll(position, size, LayerMask.GetMask("Tower"));
             if (towerColliders.Length > 1) return false;
 
-            var pathCollider = Physics2D.OverlapCircleAll(_heldTower.transform.position, .01f, LayerMask.GetMask("Path"));
+            var pathCollider = Physics2D.OverlapCircleAll(position, .01f, LayerMask.GetMask("Path"));
             return pathCollider.Length <= 0;
         }
 
@@ -102,19 +140,21 @@ namespace Towers
         {
             // Check if a tower can be placed
             if (_heldTower == null) return;
-            if (!CanPlace()) return;
+            if (!CanPlace(_heldTower.transform.position, _heldTower.baseSize)) return;
 
             // Try to buy the tower
-            if (!ResourceManager.Instance.TryBuyTower(_heldTowerData))
+            if (!ResourceManager.Instance.TrySpendCoins(_heldTowerData.cost))
             {
                 Destroy(_heldTower.gameObject);
                 _heldTower = null;
                 _heldTowerData = null;
                 return;
             }
+                
+            OnTowerFinishPlace?.Invoke(_heldTower);
+            onTowerFinishPlace?.Invoke();
             
             _heldTower.isActive = true;
-            _heldTower.ShowRangeIndicator(false);
             _heldTower = null;
         }
 

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3da7e9f33814ba2950da08c960efb3d, type: 3}
+  m_Name: DinoTowerShopData
+  m_EditorClassIdentifier: 
+  towerName: Dino
+  cost: 1000
+  description: A tower of mysterious origin
+  towerPrefab: {fileID: 3344103758968989187, guid: 055e9220f9d34c94aad8e49dff8b409c, type: 3}
+  shopIcon: {fileID: 21300000, guid: 801ce361235f2e24fbc80f2c61eac947, type: 3}

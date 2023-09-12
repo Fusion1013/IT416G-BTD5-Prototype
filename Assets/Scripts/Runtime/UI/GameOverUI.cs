@@ -1,6 +1,6 @@
 using System;
 using Enemy;
-using Game;
+using Resources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

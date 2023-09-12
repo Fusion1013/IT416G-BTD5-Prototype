@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Core.Attributes;
 using Core.Extensions;
 using Enemy;
+using TMPro;
 using Towers.Projectile;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,10 +23,6 @@ namespace Towers
 
         [SerializeField] private GameObject rangeIndicator;
         public float baseSize;
-
-        [Header("Upgrades")] 
-        [SerializeField] 
-        private UpgradePath[] upgradePaths;
 
         [Header("Shooting")]
         [SerializeField] 
@@ -53,10 +48,20 @@ namespace Towers
         [SerializeField] 
         [Tooltip("Called when any of the Projectile Shooters connected to the tower shoots")]
         private UnityEvent onTowerFire;
-        
+
+        [Header("Tower Info")] 
+        [SerializeField] private GameObject canvas;
+        [SerializeField] private TMP_Text killsAmountText;
+
         private EnemyBrain _target;
         private float _time;
+        
+        [HideInInspector] public int enemiesKilled;
         public Collider2D Footprint { get; private set; }
+
+        // -- Animations
+        private Animator _animator;
+        private static readonly int TowerPlace = Animator.StringToHash("TowerPlace");
 
         #endregion
 
@@ -64,12 +69,26 @@ namespace Towers
 
         private void Awake()
         {
+            _animator = GetComponent<Animator>();
             Footprint = GetComponent<Collider2D>();
             CalculateModifiers();
+            UpdateEnemiesKilledText(null);
         }
 
         private void Start() => ReloadShooters();
-        private void OnDisable() => UnsubscribeFromShooters();
+
+        private void OnEnable()
+        {
+            TowerManager.OnTowerFinishPlace += TowerFinishPlace;
+            Projectile.Projectile.OnEnemyCollision += UpdateEnemiesKilledText;
+        }
+
+        private void OnDisable() 
+        {
+            UnsubscribeFromShooters();
+            TowerManager.OnTowerFinishPlace -= TowerFinishPlace;
+            Projectile.Projectile.OnEnemyCollision -= UpdateEnemiesKilledText;
+        }
 
         private void OnValidate()
         {
@@ -97,17 +116,6 @@ namespace Towers
         {
             RangeModified = baseRange;
             _fireRateModified = baseFireRate;
-            
-            foreach (var path in upgradePaths)
-            {
-                foreach (var upgrade in path.upgrades)
-                {
-                    if (!upgrade.isUnlocked) continue;
-                    
-                    RangeModified += upgrade.data.additiveRange;
-                    _fireRateModified += upgrade.data.additiveFireRate;
-                }
-            }
         }
 
         private void ReloadShooters()
@@ -133,6 +141,7 @@ namespace Towers
                 
                 gun.FireRate = _fireRateModified;
                 gun.targetingPriority = targetingPriority;
+                gun.parent = this;
             }
         }
 
@@ -150,6 +159,15 @@ namespace Towers
             {
                 gun.OnShoot -= OnGunShoot;
             }
+        }
+
+        #endregion
+
+        #region Animations
+
+        private void TowerFinishPlace(TowerBrain tower)
+        {
+            if (tower == this) _animator.SetTrigger(TowerPlace);
         }
 
         #endregion
@@ -208,15 +226,17 @@ namespace Towers
 
         #region Information
 
-        public void ShowRangeIndicator(bool show)
+        private void UpdateEnemiesKilledText(GameObject obj) => killsAmountText.text = $"Kills: {enemiesKilled}";
+
+        public void ShowTowerInfo(bool show)
         {
             rangeIndicator.transform.localScale = Vector3.one * RangeModified * 2;
             rangeIndicator.SetActive(show);
+            killsAmountText.gameObject.SetActive(show);
+            canvas.SetActive(show);
         }
 
         public void SetRangeIndicatorColor(Color color) => rangeIndicator.GetComponent<SpriteRenderer>().color = color;
-        private void OnMouseEnter() => ShowRangeIndicator(isActive || rangeIndicator.activeSelf);
-        private void OnMouseExit() => ShowRangeIndicator(!isActive && rangeIndicator.activeSelf);
 
         #endregion
     }
@@ -224,18 +244,5 @@ namespace Towers
     public enum TargetingPriority
     {
         First, Last, Close, Strong
-    }
-
-    [Serializable]
-    public struct UpgradePath
-    {
-        public TowerUpgrade[] upgrades;
-    }
-
-    [Serializable]
-    public struct TowerUpgrade
-    {
-        public TowerUpgradeData data;
-        [ReadOnly] public bool isUnlocked;
     }
 }

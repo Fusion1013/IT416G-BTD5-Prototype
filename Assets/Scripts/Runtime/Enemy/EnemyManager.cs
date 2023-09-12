@@ -4,7 +4,9 @@ using System.Linq;
 using Towers;
 using Towers.Projectile;
 using UnityEngine;
+using UnityEngine.Events;
 using Debug = Core.Debug.Debug;
+using Random = UnityEngine.Random;
 
 namespace Enemy
 {
@@ -15,6 +17,7 @@ namespace Enemy
         public static EnemyManager Instance { get; private set; }
 
         public static event Action<EnemyBrain, int> OnEnemyDeath;
+        public UnityEvent<EnemyBrain, int> onEnemyDeath;
 
         public EnemyBrain enemyBrainPrefab;
         private readonly Dictionary<int, EnemyBrain> _enemies = new();
@@ -66,7 +69,7 @@ namespace Enemy
         private void SpawnEnemyDrops(EnemyBrain enemyBrain)
         {
             if (enemyBrain.data.dropOnDeath == null) return;
-            
+
             foreach (var drops in enemyBrain.data.dropOnDeath)
             {
                 if (drops.data == null) continue;
@@ -173,6 +176,7 @@ namespace Enemy
             
             SpawnEnemyDrops(enemyBrain);
             OnEnemyDeath?.Invoke(enemyBrain, _enemies.Count);
+            onEnemyDeath?.Invoke(enemyBrain, _enemies.Count);
         }
     }
 }

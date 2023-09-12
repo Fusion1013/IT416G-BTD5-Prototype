@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
 namespace Towers
 {
@@ -12,8 +10,8 @@ namespace Towers
         public int cost;
         [TextArea(4, 10)] public string description;
 
-        [FormerlySerializedAs("scenePrefab")] [Header("Scene")] 
-        public TowerBrain towerPrefab; // TODO: Replace GameObject with some script that handles placement of tower
+        [Header("Scene")] 
+        public TowerBrain towerPrefab;
         
         [Header("Visual")] 
         public Sprite shopIcon;

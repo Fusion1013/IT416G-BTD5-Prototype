@@ -229,6 +229,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4177611270703941339, guid: 234fb9b65cfc7a048a01d381eacf4887, type: 3}
+      propertyPath: targetingPriority
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177611270703941339, guid: 234fb9b65cfc7a048a01d381eacf4887, type: 3}
       propertyPath: projectileShooters.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -306,6 +310,10 @@ PrefabInstance:
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 870779550255475880, guid: f483a663d3e10cc4ab8648a86e83cc6c, type: 3}
+    - target: {fileID: 5872477041343140852, guid: 9d9fee3f52a77614d8966cb6b29fbfb5, type: 3}
+      propertyPath: targetingPriority
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5872477041343140853, guid: 9d9fee3f52a77614d8966cb6b29fbfb5, type: 3}
       propertyPath: m_RootOrder
       value: 1

@@ -11,8 +11,8 @@ namespace Enemy
         [HideInInspector] public Path path;
         [HideInInspector] public float movementSpeed;
 
-        private float _distanceMoved;
-        public float DistanceFromWaypoint => 1f - _distanceMoved;
+        public float distanceMoved;
+        public float DistanceFromWaypoint => 1f - distanceMoved;
         private Vector3 _lastWaypointPos;
         private Vector3 _targetWaypointPos;
         private float _waypointDistance; // The distance between the last and next waypoints
@@ -59,12 +59,12 @@ namespace Enemy
 
         private void Move()
         {
-            _distanceMoved += Time.deltaTime * movementSpeed / _waypointDistance;
+            distanceMoved += Time.deltaTime * movementSpeed / _waypointDistance;
             
             // If not at the waypoint yet, keep moving towards it
             if (transform.position != _targetWaypointPos)
             {
-                transform.position = Vector3.Lerp(_lastWaypointPos, _targetWaypointPos, Mathf.Min(_distanceMoved, 1));
+                transform.position = Vector3.Lerp(_lastWaypointPos, _targetWaypointPos, Mathf.Min(distanceMoved, 1));
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Enemy
                 if (TargetWaypointId < path.Points.Length - 1)
                 {
                     TargetWaypointId++;
-                    _distanceMoved = 0;
+                    distanceMoved = 0;
                     UpdateWaypoints();
                     SetRotation();
                 }

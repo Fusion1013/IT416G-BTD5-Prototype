@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AlchemistShopData
   m_EditorClassIdentifier: 
   towerName: Alchemist
-  cost: 600
+  cost: 500
   description: Throws bottles of poison on the track which creates damaging pools.
   towerPrefab: {fileID: 7549351100893659720, guid: 0e279fc400813ae45a12967e7eb9b6a7, type: 3}
   shopIcon: {fileID: 1635977559, guid: 1f1e58e22f14c044d9ebb267de1e4172, type: 3}

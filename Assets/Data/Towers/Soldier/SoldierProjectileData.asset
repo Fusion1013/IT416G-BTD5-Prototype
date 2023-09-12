@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: SoldierProjectileData
   m_EditorClassIdentifier: 
   movementSpeed: 10
+  projectilePath: {fileID: 11400000, guid: b2f966d755eaaca45a5b242d055d4164, type: 2}
   lifetime: 1
-  piercing: 1
+  piercing: 2
   instantiateOnSpawn: {fileID: 0}
   instantiateOnDeath: {fileID: 0}
   projectilePrefab: {fileID: 1216911699852116745, guid: 3e241f2aa1b784d459a7a5cd9df1a22a, type: 3}

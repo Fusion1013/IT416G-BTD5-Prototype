@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: VikingProjectileData
   m_EditorClassIdentifier: 
   movementSpeed: 15
+  projectilePath: {fileID: 11400000, guid: b2f966d755eaaca45a5b242d055d4164, type: 2}
   lifetime: 0.8
-  piercing: 3
+  piercing: 1
   instantiateOnSpawn: {fileID: 0}
   instantiateOnDeath: {fileID: 0}
   projectilePrefab: {fileID: 7206058089878860656, guid: 70d1581930529d340b98f222a2afb99c, type: 3}

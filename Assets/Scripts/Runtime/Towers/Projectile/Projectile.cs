@@ -19,18 +19,17 @@ namespace Towers.Projectile
         private Quaternion _cachedRotation;
         private Quaternion AngleRotation => Quaternion.Euler(0, 0, moveAngle);
         private Vector3 MoveDirection => AngleRotation * Vector3.up;
-        private Vector3 _centerPosition;
+        
+        private Vector3 _startPosition;
         private float _time;
         private int _hits;
 
-        [Header("Wiggle")]
-        [SerializeField] private float amplitude;
-        [SerializeField] private float frequency;
-
+        public TowerBrain parent;
+        
         private void Awake()
         {
             var projectileTransform = transform;
-            _centerPosition = projectileTransform.position;
+            _startPosition = projectileTransform.position;
             _cachedRotation = projectileTransform.rotation;
         }
 
@@ -44,19 +43,11 @@ namespace Towers.Projectile
             if (_time > data.lifetime) Destroy(gameObject);
         }
 
-        // TODO: Introduce different movement paths (Straight, wiggle, etc.)
         private void Move()
         {
-            var projectileTransform = transform;
-            var moveDelta = MoveDirection * (data.movementSpeed * Time.deltaTime);
-            var movement = _cachedRotation * moveDelta;
-            _centerPosition += movement;
-            var sinOffset = _cachedRotation * new Vector3(Mathf.Sin(_time * frequency) * amplitude, 0, 0);
-            // TODO: Rotation
-            // TODO: Wiggle
-
-            // projectileTransform.position = _centerPosition + sinOffset;
-            projectileTransform.position = _centerPosition;
+            data.projectilePath.MoveProjectile(this, new ProjectilePathInfo(
+                _startPosition, MoveDirection, _cachedRotation, data.movementSpeed, _time
+            ));
         }
 
         private void CheckOutOfBounds()
@@ -72,6 +63,8 @@ namespace Towers.Projectile
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (!col.gameObject.CompareTag("Enemy") || _hits >= data.piercing) return;
+
+            parent.enemiesKilled++;
 
             _hits++;
             OnEnemyCollision?.Invoke(col.gameObject);

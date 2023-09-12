@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5334179481981194042, guid: 92b91e62d46bbf84ab5fd2989cce46a0, type: 3}
+      propertyPath: cooldown
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5334179481981194042, guid: 92b91e62d46bbf84ab5fd2989cce46a0, type: 3}
+      propertyPath: piercing
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5334179481981194042, guid: 92b91e62d46bbf84ab5fd2989cce46a0, type: 3}
+      propertyPath: enemyLimit
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6960978892010601498, guid: 92b91e62d46bbf84ab5fd2989cce46a0, type: 3}
       propertyPath: m_Sprite
       value: 
